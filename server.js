@@ -52,8 +52,9 @@ async function remove(db, database, collection, document) {
 }
 
 app.post("/api/jsonBlob", async (req, res) => {
-    // Inserting document into JSONBlob collection and responding with result of request.
+    // Inserting document into JSONBlob collection and setting result to variable.
 	let result = await insert(db,'Assignment6','JSONBlob',req.body);
+    // Storing ID of inserted document into variable.
     let objectID = result.insertedId.toString();
     
     // Setting status code to 201, location header to documentID, and sending back json in response.
@@ -62,10 +63,20 @@ app.post("/api/jsonBlob", async (req, res) => {
     res.json(req.body);
 });
 
-app.get("/post", async (req, res) => {
-    // Requesting the JSONBlob collection and sending it back in the response.
-    let result = await find(db, "Assignment6", "Posts", {});
-    res.json(result);
+app.get("/api/jsonBlob/:id", async (req, res) => {
+    try {
+        // Requesting the JSONBlob document and sending it back in the response.
+        let result = await find(db, "Assignment6", "JSONBlob", {"_id": new ObjectID(req.params.id)});
+
+        // Setting status code to 200 and sending back json in response.
+        res.statusCode = 200;
+        res.json(result);
+    }
+    catch {
+        // Setting status code to 404 if document not found.
+        res.statusCode = 404;
+        res.end();
+    }
 });
 
 app.put("/post/:id", async (req, res) => {
@@ -76,7 +87,7 @@ app.put("/post/:id", async (req, res) => {
 
 app.delete("/post/:id", async (req, res) => {
     // Deleting document in JSONBlob collection and responding with result of request.
-    let result = await remove(db, "Assignment6", "Posts", {"_id": new ObjectID(req.params.id)});
+    let result = await remove(db, "Assignment6", "JSONBlob", {"_id": new ObjectID(req.params.id)});
     res.json(result);
 });
 

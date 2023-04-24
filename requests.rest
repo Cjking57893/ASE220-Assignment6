@@ -5,3 +5,6 @@ Content-Type: application/json
 {
     "test": "test"
 }
+
+### GET REQUEST
+GET http://localhost:3000/api/jsonBlob/6445e801317f878c3194450c
