@@ -1,0 +1,7 @@
+### POST REQUEST
+POST http://localhost:3000/api/jsonBlob
+Content-Type: application/json
+
+{
+    "test": "test"
+}
