@@ -56,6 +56,15 @@ async function remove(db, database, collection, document) {
     console.log(result);
 }
 
+async function checkUser(token) {
+    let result = await find(db, "Assignment6", "Users", {jwt: token});
+
+    if (result.length > 0) {
+        let userID = result[0]._id.toString().replace('New ObjectId("','').replace('")','');
+        return userID;
+    }
+}
+
 app.post("/api/jsonBlob", async (req, res) => {
     // Inserting document into JSONBlob collection and setting result to variable.
 	let result = await insert(db,'Assignment6','JSONBlob',req.body);
