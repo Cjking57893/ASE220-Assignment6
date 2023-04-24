@@ -7,4 +7,12 @@ Content-Type: application/json
 }
 
 ### GET REQUEST
-GET http://localhost:3000/api/jsonBlob/6445e801317f878c3194450c
+GET http://localhost:3000/api/jsonBlob/6445e798242363962cba365c
+
+### PUT REQUEST
+PUT http://localhost:3000/api/jsonBlob/6445e798242363962cba365c
+Content-Type: application/json
+
+{
+    "test": 10
+}
