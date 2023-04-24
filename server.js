@@ -8,6 +8,8 @@ const bcrypt = require("bcrypt");
 const port = 3000;
 const uri = "mongodb+srv://codyking04:xbsYjbT03CcLrgen@ase220.hct6otj.mongodb.net/?retryWrites=true&w=majority";
 const saltRounds = 10;
+const jwt_salt = "privatekey";
+const jwt_expiration = 86400000;
 
 const app = express();
 const client = new MongoClient(uri);
@@ -106,7 +108,7 @@ app.delete("/post/:id", async (req, res) => {
 
 app.post("/api/auth/signup", async (req, res) => {
     // Checking if user already has an account.
-    let result = await find(db, "Assignment6", "Users", {"email": req.body.email});
+    let result = await find(db, "Assignment6", "Users", {email: req.body.email});
 
     if (result.length > 0) {
         // Sending 406 status code and error message if user already has an account.
@@ -126,8 +128,27 @@ app.post("/api/auth/signup", async (req, res) => {
     }
 });
 
-app.post("/api/auth/signin", (req, res) => {
+app.post("/api/auth/signin", async (req, res) => {
+    // Checking if user has an account.
+    let result = await find(db, "Assignment6", "Users", {"email": req.body.email});
 
+    if (result.length == 0) {
+        res.status(406);
+        res.json({message: "User is not registered"});
+    }
+    else {
+        if (bcrypt.compareSync(req.body.password, result[0].password)) {
+            let token = jwt.sign({id: req.body.email}, jwt_salt, {expiresIN: jwt_expiration});
+
+            res.status(200);
+            res.setHeader("Authorization", `Bearer ${token}`);
+            res.json({message: "User authenticated"});
+        }
+        else {
+            res.status(406);
+            res.json({message: "Wrong password"});
+        }
+    }
 });
 
 app.get("/api/auth/signout", (req, res) => {

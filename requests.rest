@@ -28,3 +28,12 @@ Content-Type: application/json
     "email": "cody.king04@outlook.com",
     "password": "password123"
 }
+
+### SIGN IN
+POST http://localhost:3000/api/auth/signin
+Content-Type: application/json
+
+{
+    "email": "cody.king04@outlook.com",
+    "password": "password123"
+}
