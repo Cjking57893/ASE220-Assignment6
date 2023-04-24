@@ -142,19 +142,30 @@ app.post("/api/auth/signin", async (req, res) => {
     // Checking if user has an account.
     let result = await find(db, "Assignment6", "Users", {"email": req.body.email});
 
+    // Checking if any users are found.
     if (result.length == 0) {
+        // Sending 406 status code and error message if not user is found.
         res.status(406);
         res.json({message: "User is not registered"});
     }
     else {
+        // Comparing password to password hash stored in database.
         if (bcrypt.compareSync(req.body.password, result[0].password)) {
-            let token = jwt.sign({id: req.body.email}, jwt_salt, {expiresIN: jwt_expiration});
+            // Generating JSON web token with user email.
+            let token = jwt.sign({id: req.body.email}, jwt_salt, {expiresIn: jwt_expiration});
+            // Getting UserID from the document ID of user in database.
+            userID = result[0]._id.toString().replace('New ObjectId("','').replace('")','');
 
+            // Updating user in database with JSON web token.
+            await update(db, "Assignment6", "Users", {_id: new ObjectID(userID)}, {$set: {jwt: token}});
+
+            // Sending 200 status code, setting authorization header to generated token, and sending back success message.
             res.status(200);
             res.setHeader("Authorization", `Bearer ${token}`);
             res.json({message: "User authenticated"});
         }
         else {
+            // Sending 406 status code and error message if wrong password.
             res.status(406);
             res.json({message: "Wrong password"});
         }
