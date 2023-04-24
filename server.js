@@ -101,6 +101,18 @@ app.delete("/post/:id", async (req, res) => {
     res.json(result);
 });
 
+app.post("/api/auth/signup", (req, res) => {
+    
+});
+
+app.post("/api/auth/signin", (req, res) => {
+
+});
+
+app.get("/api/auth/signout", (req, res) => {
+
+});
+
 async function start(){
 	db = await connect();
 	console.log('mongoDB connected');
