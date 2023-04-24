@@ -95,10 +95,20 @@ app.put("/api/jsonBlob/:id", async (req, res) => {
     }
 });
 
-app.delete("/post/:id", async (req, res) => {
-    // Deleting document in JSONBlob collection and responding with result of request.
-    let result = await remove(db, "Assignment6", "JSONBlob", {"_id": new ObjectID(req.params.id)});
-    res.json(result);
+app.delete("/api/jsonBlob/:id", async (req, res) => {
+    try {
+        // Deleting document in JSONBlob collection.
+        await remove(db, "Assignment6", "JSONBlob", {"_id": new ObjectID(req.params.id)});
+        
+        // Setting status code to 200 and ending response.
+        res.statusCode = 200;
+        res.end();
+    }
+    catch {
+        // Setting status code to 404 if document not found.
+        res.statusCode = 404;
+        res.end();
+    }
 });
 
 async function start(){

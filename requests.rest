@@ -16,3 +16,6 @@ Content-Type: application/json
 {
     "test": 10
 }
+
+### DELETE REQUEST
+DELETE http://localhost:3000/api/jsonBlob/6445e7fe317f878c31944502
