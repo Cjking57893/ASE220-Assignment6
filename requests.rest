@@ -18,4 +18,22 @@ Content-Type: application/json
 }
 
 ### DELETE REQUEST
-DELETE http://localhost:3000/api/jsonBlob/6445e7fe317f878c31944502
+DELETE http://localhost:3000/api/jsonBlob/6445e7ff317f878c31944505
+
+### SIGN UP
+POST http://localhost:3000/api/auth/signup
+Content-Type: application/json
+
+{
+    "email": "cody.king04@outlook.com",
+    "password": "password123"
+}
+
+### SIGN IN
+POST http://localhost:3000/api/auth/signin
+Content-Type: application/json
+
+{
+    "email": "cody.king04@outlook.com",
+    "password": "password123"
+}
