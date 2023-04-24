@@ -3,8 +3,11 @@ const ObjectID = require("mongodb").ObjectId;
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 const port = 3000;
 const uri = "mongodb+srv://codyking04:xbsYjbT03CcLrgen@ase220.hct6otj.mongodb.net/?retryWrites=true&w=majority";
+const saltRounds = 10;
 
 const app = express();
 const client = new MongoClient(uri);
@@ -101,8 +104,26 @@ app.delete("/post/:id", async (req, res) => {
     res.json(result);
 });
 
-app.post("/api/auth/signup", (req, res) => {
-    
+app.post("/api/auth/signup", async (req, res) => {
+    // Checking if user already has an account.
+    let result = await find(db, "Assignment6", "Users", {"email": req.body.email});
+
+    if (result.length > 0) {
+        // Sending 406 status code and error message if user already has an account.
+        res.status(406);
+        res.json({message: "User already exists"});
+    }
+    else {
+        // Hashing password.
+        req.body.password = bcrypt.hashSync(req.body.password, saltRounds);
+        
+        // Inserting hashed password into Users collection.
+        insert(db, "Assignment6", "Users", {email: req.body.email, password: req.body.password});
+
+        // Sending 201 status code and success message.
+        res.status(201);
+        res.json("User created");
+    }
 });
 
 app.post("/api/auth/signin", (req, res) => {
