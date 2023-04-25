@@ -37,3 +37,6 @@ Content-Type: application/json
     "email": "cody.king04@outlook.com",
     "password": "password123"
 }
+
+### CHECKING SIGN IN
+GET http://localhost:3000/api/checkingSignIn

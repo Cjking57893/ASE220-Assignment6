@@ -3,6 +3,7 @@ const ObjectID = require("mongodb").ObjectId;
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const port = 3000;
@@ -15,6 +16,7 @@ const app = express();
 const client = new MongoClient(uri);
 app.use(bodyParser.json());
 app.use(cors());
+app.use(cookieParser());
 
 async function connect() {
     // Connecting to atlas database.
@@ -171,7 +173,11 @@ app.post("/api/auth/signin", async (req, res) => {
             // Sending 200 status code, setting authorization header to generated token, and sending back success message.
             res.status(200);
             res.setHeader("Authorization", `Bearer ${token}`);
+            res.setHeader("Set-Cookie", `token=${token}`);
             res.json({message: "User authenticated"});
+            res.cookie = ("token", token, {
+                httpOnly: true
+            });
         }
         else {
             // Sending 406 status code and error message if wrong password.
@@ -183,6 +189,11 @@ app.post("/api/auth/signin", async (req, res) => {
 
 app.get("/api/auth/signout", (req, res) => {
 
+});
+
+app.get("/api/checkingSignIn", async (req, res) => {
+    console.log(req.cookies);
+    console.log(await checkUser(req.cookies["jwt"]));
 });
 
 async function start(){
