@@ -170,14 +170,13 @@ app.post("/api/auth/signin", async (req, res) => {
             // Updating user in database with JSON web token.
             await update(db, "Assignment6", "Users", {_id: new ObjectID(userID)}, {$set: {jwt: token}});
 
-            // Sending 200 status code, setting authorization header to generated token, and sending back success message.
+            // Sending 200 status code, setting token to cookie, and sending back success message.
             res.status(200);
-            res.setHeader("Authorization", `Bearer ${token}`);
-            res.setHeader("Set-Cookie", `token=${token}`);
-            res.json({message: "User authenticated"});
-            res.cookie = ("token", token, {
+            res.cookie("token", token, {
+                maxAge: 1200000,
                 httpOnly: true
             });
+            res.json({message: "User authenticated"});
         }
         else {
             // Sending 406 status code and error message if wrong password.
@@ -193,7 +192,6 @@ app.get("/api/auth/signout", (req, res) => {
 
 app.get("/api/checkingSignIn", async (req, res) => {
     console.log(req.cookies);
-    console.log(await checkUser(req.cookies["jwt"]));
 });
 
 async function start(){
