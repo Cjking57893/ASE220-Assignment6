@@ -18,7 +18,7 @@ Content-Type: application/json
 }
 
 ### DELETE REQUEST
-DELETE http://localhost:3000/api/jsonBlob/64506a5baec02d96f1defed3
+DELETE http://localhost:3000/api/jsonBlob/64507e911d1e1c31574e7fcc
 
 ### SIGN UP
 POST http://localhost:3000/api/auth/signup

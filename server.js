@@ -79,15 +79,14 @@ const verifyToken = function (req, res, next) {
 
 const verifyUser = async function (req, res, next) {
     let result = await find(db, "Assignment6", "JSONBlob", {"_id": new ObjectID(req.params.id)});
-
-    console.log(req.cookies.token);
-    console.log(result[0].UserID);
+    let UserID = await find(db, "Assignment6", "Users", {"jwt": req.cookies.token});
+    UserID = JSON.stringify(UserID[0]._id).replace(/"|'/g, '');
 
     if (result.length == 0) {
         res.statusCode = 404;
         res.json({"message": "Document does not exist"});
     }
-    else if (req.cookies.token != result[0].UserID) {
+    else if (UserID != result[0].UserID) {
         res.statusCode = 403;
         res.json({"message": "User is not owner of document"});
     }
