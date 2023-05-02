@@ -215,13 +215,8 @@ app.post("/api/auth/signin", async (req, res) => {
 });
 
 app.post("/api/auth/signout", verifyToken, (req, res) => {
-    //TODO: Add sign out route that deletes cookie.
-    res.cookie("token", "", {
-        maxAge: 10000,
-        httpOnly: true
-    });
-    console.log(req.cookies.token);
-    res.json();
+    res.clearCookie("token");
+    res.json({"message": "User has been signed out"});
 });
 
 async function start(){
