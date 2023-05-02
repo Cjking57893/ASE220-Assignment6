@@ -70,7 +70,7 @@ const setUserID = async function (req, res, next) {
 const verifyToken = function (req, res, next) {
     if (req.cookies.token == undefined) {
         res.statusCode = 403;
-        res.json({"message": "User is not logged in"});
+        res.json({message: "User is not logged in"});
     }
     else {
         next();
@@ -84,11 +84,11 @@ const verifyUser = async function (req, res, next) {
 
     if (result.length == 0) {
         res.statusCode = 404;
-        res.json({"message": "Document does not exist"});
+        res.json({message: "Document does not exist"});
     }
     else if (UserID != result[0].UserID) {
         res.statusCode = 403;
-        res.json({"message": "User is not owner of document"});
+        res.json({message: "User is not owner of document"});
     }
     else {
         next();
@@ -119,7 +119,7 @@ app.get("/api/jsonBlob/:id", async (req, res) => {
     else {
         // Setting status code to 404 if document not found.
         res.statusCode = 404;
-        res.end();
+        res.json({message: "Document not found"});
     }
 });
 
@@ -135,7 +135,7 @@ app.put("/api/jsonBlob/:id", verifyToken, verifyUser, async (req, res) => {
     catch {
         // Setting status code to 404 if document not found.
         res.statusCode = 404;
-        res.end();
+        res.json({message: "Document not found"});
     }
 });
 
@@ -146,12 +146,12 @@ app.delete("/api/jsonBlob/:id", verifyToken, verifyUser, async (req, res) => {
         
         // Setting status code to 200 and ending response.
         res.statusCode = 200;
-        res.end();
+        res.json({message: "Document has been deleted"});
     }
     catch {
         // Setting status code to 404 if document not found.
         res.statusCode = 404;
-        res.end();
+        res.json({message: "Document not found"});
     }
 });
 
@@ -173,7 +173,7 @@ app.post("/api/auth/signup", async (req, res) => {
 
         // Sending 201 status code and success message.
         res.status(201);
-        res.json("User created");
+        res.json({message: "User created"});
     }
 });
 
@@ -216,7 +216,7 @@ app.post("/api/auth/signin", async (req, res) => {
 
 app.post("/api/auth/signout", verifyToken, (req, res) => {
     res.clearCookie("token");
-    res.json({"message": "User has been signed out"});
+    res.json({message: "User has been signed out"});
 });
 
 async function start(){
