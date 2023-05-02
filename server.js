@@ -64,6 +64,8 @@ const verifyToken = function (req, res, next) {
         res.json({"message": "User is not logged in"});
     }
 
+    console.log(req.cookies.token);
+
     next();
 }
 
@@ -88,15 +90,15 @@ app.post("/api/jsonBlob", verifyToken, async (req, res) => {
 });
 
 app.get("/api/jsonBlob/:id", verifyToken, async (req, res) => {
-    try {
-        // Requesting the JSONBlob document and setting to result variable.
-        let result = await find(db, "Assignment6", "JSONBlob", {"_id": new ObjectID(req.params.id)});
+    // Requesting the JSONBlob document and setting to result variable.
+    let result = await find(db, "Assignment6", "JSONBlob", {"_id": new ObjectID(req.params.id)});
 
+    if (result.length != 0) {
         // Setting status code to 200 and sending back json in response.
         res.statusCode = 200;
         res.json(result);
     }
-    catch {
+    else {
         // Setting status code to 404 if document not found.
         res.statusCode = 404;
         res.end();
