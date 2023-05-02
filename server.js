@@ -63,16 +63,19 @@ const verifyToken = function (req, res, next) {
         res.statusCode = 403;
         res.json({"message": "User is not logged in"});
     }
-    console.log(req.cookies.token);
 
     next();
 }
 
 const verifyUser = function (req, res, next) {
 
+
+    next();
 }
 
 app.post("/api/jsonBlob", verifyToken, async (req, res) => {
+    req.body.UserID = req.cookies.token;
+
     // Inserting document into JSONBlob collection and setting result to variable.
 	let result = await insert(db,'Assignment6','JSONBlob',req.body);
     // Storing ID of inserted document into variable.
