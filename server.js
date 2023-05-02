@@ -17,6 +17,14 @@ const client = new MongoClient(uri);
 app.use(bodyParser.json());
 app.use(cors());
 app.use(cookieParser());
+app.use((err, req, res, next) => {
+    if (err instanceof SyntaxError && err.status == 400 && "body" in err) {
+        console.log(err);
+        res.status = 400;
+        res.json({message: "Invalid JSON"});
+    }
+    next();
+});
 
 async function connect() {
     // Connecting to atlas database.
@@ -95,7 +103,12 @@ const verifyUser = async function (req, res, next) {
     }
 }
 
-app.post("/api/jsonBlob", verifyToken, setUserID, async (req, res) => {
+const checkJsonValid = function (req, res, next) {
+    console.log(req.body);
+    next();
+}
+
+app.post("/api/jsonBlob", verifyToken, checkJsonValid, setUserID, async (req, res) => {
     // Inserting document into JSONBlob collection and setting result to variable.
 	let result = await insert(db,'Assignment6','JSONBlob',req.body);
     // Storing ID of inserted document into variable.
