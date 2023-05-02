@@ -10,7 +10,7 @@ Content-Type: application/json
 GET http://localhost:3000/api/jsonBlob/64506a5baec02d96f1defed3
 
 ### PUT REQUEST
-PUT http://localhost:3000/api/jsonBlob/6445e798242363962cba365c
+PUT http://localhost:3000/api/jsonBlob/64512d4467c110e4d053a84f
 Content-Type: application/json
 
 {
@@ -18,14 +18,14 @@ Content-Type: application/json
 }
 
 ### DELETE REQUEST
-DELETE http://localhost:3000/api/jsonBlob/64507e911d1e1c31574e7fcc
+DELETE http://localhost:3000/api/jsonBlob/64512d4467c110e4d053a84f
 
 ### SIGN UP
 POST http://localhost:3000/api/auth/signup
 Content-Type: application/json
 
 {
-    "email": "cody.king04@outlook.com",
+    "email": "carson.king04@outlook.com",
     "password": "password123"
 }
 
@@ -34,6 +34,9 @@ POST http://localhost:3000/api/auth/signin
 Content-Type: application/json
 
 {
-    "email": "cody.king04@outlook.com",
+    "email": "carson.king04@outlook.com",
     "password": "password123"
 }
+
+### SIGN OUT
+POST http://localhost:3000/api/auth/signout

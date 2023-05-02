@@ -214,8 +214,14 @@ app.post("/api/auth/signin", async (req, res) => {
     }
 });
 
-app.get("/api/auth/signout", (req, res) => {
+app.post("/api/auth/signout", verifyToken, (req, res) => {
     //TODO: Add sign out route that deletes cookie.
+    res.cookie("token", "", {
+        maxAge: 10000,
+        httpOnly: true
+    });
+    console.log(req.cookies.token);
+    res.json();
 });
 
 async function start(){
