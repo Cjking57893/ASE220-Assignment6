@@ -58,16 +58,16 @@ async function remove(db, database, collection, document) {
     console.log(result);
 }
 
-async function checkUser(token) {
-    let result = await find(db, "Assignment6", "Users", {jwt: token});
-
-    if (result.length > 0) {
-        let userID = result[0]._id.toString().replace('New ObjectId("','').replace('")','');
-        return userID;
+const verifyToken = function (req, res, next) {
+    if (req.cookies.token != undefined) {
+        res.statusCode = 403;
+        res.json({"message": "User is not logged in"});
     }
+
+    next();
 }
 
-app.post("/api/jsonBlob", async (req, res) => {
+app.post("/api/jsonBlob", verifyToken, async (req, res) => {
     // Inserting document into JSONBlob collection and setting result to variable.
 	let result = await insert(db,'Assignment6','JSONBlob',req.body);
     // Storing ID of inserted document into variable.
@@ -79,7 +79,7 @@ app.post("/api/jsonBlob", async (req, res) => {
     res.json(req.body);
 });
 
-app.get("/api/jsonBlob/:id", async (req, res) => {
+app.get("/api/jsonBlob/:id", verifyToken, async (req, res) => {
     try {
         // Requesting the JSONBlob document and setting to result variable.
         let result = await find(db, "Assignment6", "JSONBlob", {"_id": new ObjectID(req.params.id)});
@@ -95,7 +95,7 @@ app.get("/api/jsonBlob/:id", async (req, res) => {
     }
 });
 
-app.put("/api/jsonBlob/:id", async (req, res) => {
+app.put("/api/jsonBlob/:id", verifyToken, async (req, res) => {
     try {
         // Updating document in JSONBlob collection.
         await update(db, "Assignment6", "JSONBlob", {"_id": new ObjectID(req.params.id)}, {$set: req.body});
@@ -111,7 +111,7 @@ app.put("/api/jsonBlob/:id", async (req, res) => {
     }
 });
 
-app.delete("/api/jsonBlob/:id", async (req, res) => {
+app.delete("/api/jsonBlob/:id", verifyToken, async (req, res) => {
     try {
         // Deleting document in JSONBlob collection.
         await remove(db, "Assignment6", "JSONBlob", {"_id": new ObjectID(req.params.id)});
