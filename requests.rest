@@ -7,7 +7,7 @@ Content-Type: application/json
 }
 
 ### GET REQUEST
-GET http://localhost:3000/api/jsonBlob/6445e798242363962cba365c
+GET http://localhost:3000/api/jsonBlob/64506a5baec02d96f1defed3
 
 ### PUT REQUEST
 PUT http://localhost:3000/api/jsonBlob/6445e798242363962cba365c
@@ -18,7 +18,7 @@ Content-Type: application/json
 }
 
 ### DELETE REQUEST
-DELETE http://localhost:3000/api/jsonBlob/6445e7ff317f878c31944505
+DELETE http://localhost:3000/api/jsonBlob/64506a5baec02d96f1defed3
 
 ### SIGN UP
 POST http://localhost:3000/api/auth/signup
@@ -37,6 +37,3 @@ Content-Type: application/json
     "email": "cody.king04@outlook.com",
     "password": "password123"
 }
-
-### CHECKING SIGN IN
-GET http://localhost:3000/api/checkingSignIn

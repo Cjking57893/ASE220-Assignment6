@@ -58,26 +58,45 @@ async function remove(db, database, collection, document) {
     console.log(result);
 }
 
+const setUserID = async function (req, res, next) {
+    let result = await find(db, "Assignment6", "Users", {"jwt": req.cookies.token});
+    let UserID = JSON.stringify(result[0]._id).replace(/"|'/g, '');
+
+    req.body.UserID = UserID;
+
+    next();
+}
+
 const verifyToken = function (req, res, next) {
     if (req.cookies.token == undefined) {
         res.statusCode = 403;
         res.json({"message": "User is not logged in"});
     }
+    else {
+        next();
+    }
+}
+
+const verifyUser = async function (req, res, next) {
+    let result = await find(db, "Assignment6", "JSONBlob", {"_id": new ObjectID(req.params.id)});
 
     console.log(req.cookies.token);
+    console.log(result[0].UserID);
 
-    next();
+    if (result.length == 0) {
+        res.statusCode = 404;
+        res.json({"message": "Document does not exist"});
+    }
+    else if (req.cookies.token != result[0].UserID) {
+        res.statusCode = 403;
+        res.json({"message": "User is not owner of document"});
+    }
+    else {
+        next();
+    }
 }
 
-const verifyUser = function (req, res, next) {
-
-
-    next();
-}
-
-app.post("/api/jsonBlob", verifyToken, async (req, res) => {
-    req.body.UserID = req.cookies.token;
-
+app.post("/api/jsonBlob", verifyToken, setUserID, async (req, res) => {
     // Inserting document into JSONBlob collection and setting result to variable.
 	let result = await insert(db,'Assignment6','JSONBlob',req.body);
     // Storing ID of inserted document into variable.
@@ -89,7 +108,7 @@ app.post("/api/jsonBlob", verifyToken, async (req, res) => {
     res.json(req.body);
 });
 
-app.get("/api/jsonBlob/:id", verifyToken, async (req, res) => {
+app.get("/api/jsonBlob/:id", async (req, res) => {
     // Requesting the JSONBlob document and setting to result variable.
     let result = await find(db, "Assignment6", "JSONBlob", {"_id": new ObjectID(req.params.id)});
 
@@ -105,7 +124,7 @@ app.get("/api/jsonBlob/:id", verifyToken, async (req, res) => {
     }
 });
 
-app.put("/api/jsonBlob/:id", verifyToken, async (req, res) => {
+app.put("/api/jsonBlob/:id", verifyToken, verifyUser, async (req, res) => {
     try {
         // Updating document in JSONBlob collection.
         await update(db, "Assignment6", "JSONBlob", {"_id": new ObjectID(req.params.id)}, {$set: req.body});
@@ -121,7 +140,7 @@ app.put("/api/jsonBlob/:id", verifyToken, async (req, res) => {
     }
 });
 
-app.delete("/api/jsonBlob/:id", verifyToken, async (req, res) => {
+app.delete("/api/jsonBlob/:id", verifyToken, verifyUser, async (req, res) => {
     try {
         // Deleting document in JSONBlob collection.
         await remove(db, "Assignment6", "JSONBlob", {"_id": new ObjectID(req.params.id)});
@@ -197,11 +216,7 @@ app.post("/api/auth/signin", async (req, res) => {
 });
 
 app.get("/api/auth/signout", (req, res) => {
-
-});
-
-app.get("/api/checkingSignIn", async (req, res) => {
-    console.log(req.cookies);
+    //TODO: Add sign out route that deletes cookie.
 });
 
 async function start(){
