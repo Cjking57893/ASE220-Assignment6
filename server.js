@@ -59,12 +59,17 @@ async function remove(db, database, collection, document) {
 }
 
 const verifyToken = function (req, res, next) {
-    if (req.cookies.token != undefined) {
+    if (req.cookies.token == undefined) {
         res.statusCode = 403;
         res.json({"message": "User is not logged in"});
     }
+    console.log(req.cookies.token);
 
     next();
+}
+
+const verifyUser = function (req, res, next) {
+
 }
 
 app.post("/api/jsonBlob", verifyToken, async (req, res) => {
