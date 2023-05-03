@@ -115,7 +115,7 @@ const verifyUser = async function (req, res, next) {
     }
 }
 
-app.post("/api/jsonBlob", verifyToken, checkJsonValid, setUserID, async (req, res) => {
+app.post("/api/jsonBlob", verifyToken, setUserID, async (req, res) => {
     // Inserting document into JSONBlob collection and setting result to variable.
 	let result = await insert(db,'Assignment6','JSONBlob',req.body);
     // Storing ID of inserted document into variable.
