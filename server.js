@@ -11,12 +11,14 @@ const uri = "mongodb+srv://codyking04:xbsYjbT03CcLrgen@ase220.hct6otj.mongodb.ne
 const saltRounds = 10;
 const jwt_salt = "privatekey";
 const jwt_expiration = 86400000;
-
 const app = express();
 const client = new MongoClient(uri);
+
+/* Middleware */
 app.use(bodyParser.json());
 app.use(cors());
 app.use(cookieParser());
+// Middleware checks for valid JSON.
 app.use((err, req, res, next) => {
     if (err instanceof SyntaxError && err.status == 400 && "body" in err) {
         console.log(err);
@@ -67,45 +69,50 @@ async function remove(db, database, collection, document) {
 }
 
 const setUserID = async function (req, res, next) {
+    // Getting userID from user that matches token cookie.
     let result = await find(db, "Assignment6", "Users", {"jwt": req.cookies.token});
     let UserID = JSON.stringify(result[0]._id).replace(/"|'/g, '');
 
+    // Storing UserID in body to put in document later.
     req.body.UserID = UserID;
 
+    // Moving to next middleware.
     next();
 }
 
 const verifyToken = function (req, res, next) {
+    // Checking if token is stored.
     if (req.cookies.token == undefined) {
         res.statusCode = 403;
         res.json({message: "User is not logged in"});
     }
+    // Moving to next middleware if token is stored.
     else {
         next();
     }
 }
 
 const verifyUser = async function (req, res, next) {
+    // Finding document that matches id given as request parameter.
     let result = await find(db, "Assignment6", "JSONBlob", {"_id": new ObjectID(req.params.id)});
+    // Getting userID from user that matches token cookie.
     let UserID = await find(db, "Assignment6", "Users", {"jwt": req.cookies.token});
     UserID = JSON.stringify(UserID[0]._id).replace(/"|'/g, '');
 
+    // Checking if any documents are found that match id given as request parameter.
     if (result.length == 0) {
         res.statusCode = 404;
         res.json({message: "Document does not exist"});
     }
+    // Checking if user is owner of document.
     else if (UserID != result[0].UserID) {
         res.statusCode = 403;
         res.json({message: "User is not owner of document"});
     }
+    // Moving to next middleware if document exists and user is owner of document.
     else {
         next();
     }
-}
-
-const checkJsonValid = function (req, res, next) {
-    console.log(req.body);
-    next();
 }
 
 app.post("/api/jsonBlob", verifyToken, checkJsonValid, setUserID, async (req, res) => {
@@ -228,6 +235,7 @@ app.post("/api/auth/signin", async (req, res) => {
 });
 
 app.post("/api/auth/signout", verifyToken, (req, res) => {
+    // Clearing token cookie and responding with success message.
     res.clearCookie("token");
     res.json({message: "User has been signed out"});
 });
