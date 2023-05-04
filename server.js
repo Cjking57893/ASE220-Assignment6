@@ -121,6 +121,7 @@ const checkValidID = (req, res, next) => {
     // Checking if ObjectID is valid.
     try {
         new ObjectID(req.params.id);
+        next();
     }
     // Logging error, responding with 400 status, and sending back error message if ObjectID is invalid.
     catch (error) {
