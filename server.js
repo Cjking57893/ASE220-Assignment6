@@ -125,7 +125,7 @@ const checkValidID = (req, res, next) => {
     // Logging error, responding with 400 status, and sending back error message if ObjectID is invalid.
     catch (error) {
         console.log(error);
-        res.status = 400;
+        res.statusCode = 400;
         res.json({message: "Invalid JSONBlob ID"});
     }
 }
