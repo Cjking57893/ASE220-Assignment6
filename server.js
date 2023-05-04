@@ -22,7 +22,7 @@ app.use(cookieParser());
 app.use((err, req, res, next) => {
     if (err instanceof SyntaxError && err.status == 400 && "body" in err) {
         console.log(err);
-        res.status = 400;
+        res.statusCode = 400;
         res.json({message: "Invalid JSON"});
     }
     else {
