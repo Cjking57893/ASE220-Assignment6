@@ -25,7 +25,9 @@ app.use((err, req, res, next) => {
         res.status = 400;
         res.json({message: "Invalid JSON"});
     }
-    next();
+    else {
+        next();
+    }
 });
 
 async function connect() {
