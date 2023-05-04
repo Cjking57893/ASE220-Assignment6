@@ -117,6 +117,19 @@ const verifyUser = async function (req, res, next) {
     }
 }
 
+const checkValidID = (req, res, next) => {
+    // Checking if ObjectID is valid.
+    try {
+        new ObjectID(req.params.id);
+    }
+    // Logging error, responding with 400 status, and sending back error message if ObjectID is invalid.
+    catch (error) {
+        console.log(error);
+        res.status = 400;
+        res.json({message: "Invalid JSONBlob ID"});
+    }
+}
+
 app.post("/api/jsonBlob", verifyToken, setUserID, async (req, res) => {
     // Inserting document into JSONBlob collection and setting result to variable.
 	let result = await insert(db,'Assignment6','JSONBlob',req.body);
@@ -129,7 +142,7 @@ app.post("/api/jsonBlob", verifyToken, setUserID, async (req, res) => {
     res.json(req.body);
 });
 
-app.get("/api/jsonBlob/:id", async (req, res) => {
+app.get("/api/jsonBlob/:id", checkValidID, async (req, res) => {
     // Requesting the JSONBlob document and setting to result variable.
     let result = await find(db, "Assignment6", "JSONBlob", {"_id": new ObjectID(req.params.id)});
 
@@ -145,7 +158,7 @@ app.get("/api/jsonBlob/:id", async (req, res) => {
     }
 });
 
-app.put("/api/jsonBlob/:id", verifyToken, verifyUser, async (req, res) => {
+app.put("/api/jsonBlob/:id", checkValidID, verifyToken, verifyUser, async (req, res) => {
     try {
         // Updating document in JSONBlob collection.
         await update(db, "Assignment6", "JSONBlob", {"_id": new ObjectID(req.params.id)}, {$set: req.body});
@@ -161,7 +174,7 @@ app.put("/api/jsonBlob/:id", verifyToken, verifyUser, async (req, res) => {
     }
 });
 
-app.delete("/api/jsonBlob/:id", verifyToken, verifyUser, async (req, res) => {
+app.delete("/api/jsonBlob/:id", checkValidID, verifyToken, verifyUser, async (req, res) => {
     try {
         // Deleting document in JSONBlob collection.
         await remove(db, "Assignment6", "JSONBlob", {"_id": new ObjectID(req.params.id)});
